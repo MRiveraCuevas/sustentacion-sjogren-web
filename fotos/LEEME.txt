@@ -1,0 +1,1 @@
+Coloca aquí receta1.jpg … receta6.jpg (ver PROMPTS_IMAGENES.md y js/fotos.js).
