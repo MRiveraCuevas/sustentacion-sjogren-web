@@ -413,3 +413,13 @@ footer{margin-top:0}
 .rfig:has(img.photo) img{aspect-ratio:16/9}.rtop:has(img.photo){grid-template-columns:minmax(320px,52%) 1fr}
 .rimg:has(img.photo){aspect-ratio:16/10}img.photo{object-position:center}.mos figure img.photo,.mosr img.photo{object-position:38% center}.lvp .rth.photo,.rth.photo{object-position:38% center}
 @media(max-width:900px){.lvbtns{grid-template-columns:repeat(4,1fr)}.lvp.on{grid-template-columns:1fr}.brk{display:none}.rtop:has(img.photo){grid-template-columns:1fr}}
+
+/* Figura glándulas (slide 2) */
+.glands{margin:18px 0 20px;border-radius:18px;overflow:hidden;background:#efeae0;border:1px solid var(--line)}
+.glands img{display:block;width:100%;aspect-ratio:1600/350;object-fit:cover;object-position:top}
+.glands figcaption{position:relative;height:44px;font:700 .95rem var(--font);color:var(--ink)}
+.glands figcaption span{position:absolute;top:0;transform:translateX(-50%);display:flex;align-items:center;gap:8px;white-space:nowrap}
+.glands .gs{left:18.75%}.glands .gl2{left:86.4%}
+.glands figcaption i{width:12px;height:12px;border-radius:50%;flex:none}.glands .gs i{background:#B8645F}.glands .gl2 i{background:#4E8DBF}
+@media(max-width:700px){.glands figcaption{font-size:.78rem}}
+

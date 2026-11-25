@@ -1,17 +1,22 @@
 /* Sustentación Sjögren – sitio de recorrido por scroll (v4, basado en Sustentacion_Sjogren_reorganizada.pptx) */
 const CHAPTERS = [
-  { id: 'introduccion', name: 'Introducción',          sub: 'Sjögren, saliva, bolo y marco IDDSI',        from: 2,  to: 7,  ac: '#0B8C8C' },
-  { id: 'problema',     name: 'Problema y objetivos',  sub: 'El vacío, la pregunta y los objetivos',      from: 8,  to: 10, ac: '#C98A00' },
-  { id: 'metodo',       name: 'Metodología',           sub: 'Enfoque, búsqueda, fases y diseño',          from: 11, to: 14, ac: '#4A63D8' },
-  { id: 'resultados',   name: 'Resultados',            sub: 'Depuración, criterios e ingredientes',       from: 15, to: 21, ac: '#D4573C' },
-  { id: 'recetas',      name: 'Recetario',             sub: 'Seis preparaciones colombianas adaptadas',   from: 22, to: 28, ac: '#0A8F5B' },
-  { id: 'cierre',       name: 'Conclusiones y perspectivas', sub: 'Qué se logró y qué sigue',             from: 29, to: 30, ac: '#4A63D8' },
-  { id: 'referencias',  name: 'Referencias',           sub: 'Bibliografía principal',                     from: 31, to: 31, ac: '#5A6B8A' },
+  { id: 'introduccion', name: 'Introducción',          sub: 'Sjögren, saliva y formación del bolo',        from: 2,  to: 4,  ac: '#0B8C8C' },
+  { id: 'problema',     name: 'Problema y objetivos',  sub: 'El vacío, la pregunta, los objetivos, la relevancia y el marco IDDSI', from: 5,  to: 9, ac: '#C98A00' },
+  { id: 'metodo',       name: 'Metodología',           sub: 'Enfoque, búsqueda, fases y diseño',          from: 10, to: 13, ac: '#4A63D8' },
+  { id: 'resultados',   name: 'Resultados',            sub: 'Depuración, criterios e ingredientes',       from: 14, to: 20, ac: '#D4573C' },
+  { id: 'recetas',      name: 'Recetario',             sub: 'Seis preparaciones colombianas adaptadas',   from: 21, to: 27, ac: '#0A8F5B' },
+  { id: 'cierre',       name: 'Conclusiones y perspectivas', sub: 'Qué se logró y qué sigue',             from: 28, to: 29, ac: '#4A63D8' },
+  { id: 'referencias',  name: 'Referencias',           sub: 'Bibliografía principal',                     from: 30, to: 30, ac: '#5A6B8A' },
 ];
+/* Reorganización: se elimina la diapositiva 7 original (verificación de niveles) y las diapositivas 5 y 6 originales pasan después de Objetivos */
+const TESTS_SLIDE = SLIDES.find(x => x.n === 7);
+(() => { const order = [1, 2, 3, 4, 8, 9, 10, 5, 6, ...Array.from({ length: 22 }, (_, i) => 11 + i)];
+  const old = SLIDES.slice(); SLIDES.length = 0;
+  order.forEach((o, i) => { const sl = old.find(x => x.n === o); sl.n = i + 1; SLIDES.push(sl); }); })();
 const TOTAL = SLIDES.length;
 const RIDX = {};
 const SL = n => SLIDES.find(s => s.n === n);
-[23, 24, 25, 26, 27, 28].forEach((n, i) => { RIDX[SL(n).img] = i; });
+[22, 23, 24, 25, 26, 27].forEach((n, i) => { RIDX[SL(n).img] = i; });
 const $ = (s, r = document) => r.querySelector(s);
 const $$ = (s, r = document) => [...r.querySelectorAll(s)];
 const pad = n => String(n).padStart(2, '0');
@@ -38,9 +43,9 @@ function levelsAll(s) {
   const deck = s.levels.map((l, i) => ({ n: 3 + i, t: l.t, d: l.d, img: s.imgs[i] }));
   const all = [...ex, ...deck].map(l => Object.assign(l, { tipo: l.n < 3 ? 'Bebida' : l.n < 5 ? 'Bebida y alimento' : 'Alimento' }));
   all[3].ml = 'más de 8 ml'; all[3].h = 90;
-  const ti = SL(7).imgs, tt = SL(7).tests;
+  const ti = TESTS_SLIDE.imgs, tt = TESTS_SLIDE.tests;
   const tst = n => n <= 2 ? [2, 'Flujo con jeringa'] : n === 3 ? [1, 'Inclinación de cuchara y flujo con jeringa'] : n === 4 ? [1, 'Inclinación de cuchara'] : n <= 6 ? [0, 'Presión con tenedor'] : [0, 'Alimentos regulares: incluye duros, secos o crujientes'];
-  const recs = [23, 24, 25, 26, 27, 28].map(n => { const r = SL(n), lv = levelsOf(r.level); return { n, name: r.name, img: r.img, main: lv.main, sec: lv.sec }; });
+  const recs = [22, 23, 24, 25, 26, 27].map(n => { const r = SL(n), lv = levelsOf(r.level); return { n, name: r.name, img: r.img, main: lv.main, sec: lv.sec }; });
   all.forEach(l => { const [k, name] = tst(l.n); l.tImg = ti[k]; l.test = name;
     l.recs = recs.filter(r => r.main.includes(l.n) || r.sec.includes(l.n)).map(r => ({ n: r.n, name: r.name, img: r.img, sec: !r.main.includes(l.n) })); });
   return all;
@@ -49,6 +54,7 @@ function levelsAll(s) {
 /* ---------- Diseños por tipo ---------- */
 const R = {
   intro: s => `<div class="irows">${s.bullets.map((b, i) => `<div class="irow" data-rv>${IC(s.icons[i])}<p class="pt">${b}</p></div>`).join('')}</div>
+    <figure class="glands" data-rv><img src="img/glandulas.jpg" alt="Glándula salival (roja) y glándula lagrimal (azul), vistas al microscopio" loading="lazy"><figcaption><span class="gs"><i></i>Glándula salival</span><span class="gl2"><i></i>Glándula lagrimal</span></figcaption></figure>
     <div class="grid g3">${[
       `<div class="sc" data-rv><b class="sm">${s.stats[0][0]}</b><span>${s.stats[0][1]}</span></div>`,
       counter(0.12, s.stats[1][1], { dec: 2, sfx: ' %' }).replace('<span>', '<span class="">'),
@@ -69,8 +75,6 @@ const R = {
     <div class="lvbtns">${L.map((l, i) => `<button type="button" class="${i ? '' : 'on'}" data-lv="${i}">${IM(l.img)}<b>${l.n}</b></button>`).join('')}</div>
     <div class="brk"><span class="dr">Bebidas · niveles 0 a 4</span><span class="fd">Alimentos · niveles 3 a 7</span></div>
     <div class="lvpanels">${L.map((l, i) => `<div class="lvp${i ? '' : ' on'}"><div class="lvimg">${IM(l.img)}</div><div class="lvt"><small>NIVEL ${l.n} · ${l.tipo.toUpperCase()}</small><h4>${l.t}</h4><p>${l.d}</p>
-      ${l.h != null ? `<div class="gauge"><div class="syr"><i style="--h:${l.h}%"></i></div><div><b>Prueba de flujo con jeringa</b><span>Tras 10 s quedan ${l.ml}</span></div></div>` : ''}
-      <div class="tst">${IM(l.tImg)}<span>${l.test}</span></div>
       ${l.recs.length ? `<div class="rch"><b>Recetas en este nivel</b>${l.recs.map(r => `<button type="button" data-go="${r.n}" class="${r.sec ? 'sec' : ''}">${IM(r.img, 'rth')}${r.name}${r.sec ? ' (se acerca)' : ''}</button>`).join('')}</div>` : '<div class="rch"><b>Recetas en este nivel</b><span>Ninguna del recetario</span></div>'}
       ${l.extra ? '<em class="comp">Complemento del marco IDDSI (2024); no figura en las diapositivas.</em>' : ''}</div></div>`).join('')}</div>
     <div class="lvctl"><button type="button" data-act="prev">← Anterior</button><button type="button" data-act="play" class="play">▶ Recorrer niveles</button><button type="button" data-act="next">Siguiente →</button></div></div>
@@ -104,13 +108,13 @@ const R = {
     <div><small class="lab" data-rv>${s.per_t}</small><div class="road">${s.per.map((p, i) => `<div class="rd" data-rv>${IC(s.icons[i])}<div><b>${p[0]}</b><span>${p[1]}</span></div></div>`).join('')}</div></div></div>`,
   refs: s => `<input class="tf" id="rf" type="search" placeholder="Buscar en las referencias (autor, año, revista)…" aria-label="Buscar referencias"><p class="src" id="rcount">${s.refs.length} referencias</p><div class="refs">${s.refs.map(t => `<p class="ref" data-rv>${t}</p>`).join('')}</div><div class="credits" id="credits"></div>`,
 };
-const WIDE = new Set([9, 15, 17, 18, 19, 20, 22, 12]);
+const WIDE = new Set([6, 14, 16, 17, 18, 19, 21, 11]);
 
 function renderSlide(s) {
   const body = R[s.type](s);
   const say = s.notes ? `<div class="say" data-rv><button type="button">PARA SUSTENTAR <i>+</i></button><div class="txt">${s.notes}</div></div>` : '';
   const k = s.kicker.includes('·') ? `<small class="kick">${s.kicker.split('·').slice(1).join('·').trim()}</small>` : '';
-  return `<article class="slide rv${s.n === 9 ? ' dark wide' : WIDE.has(s.n) ? ' wide' : ''}" data-n="${s.n}" data-t="${s.title}"><aside><span class="no">${pad(s.n)} / ${TOTAL}</span>${k}<h3>${s.title}</h3></aside><div class="ct">${body}${say}</div></article>`;
+  return `<article class="slide rv${s.n === 6 ? ' dark wide' : WIDE.has(s.n) ? ' wide' : ''}" data-n="${s.n}" data-t="${s.title}"><aside><span class="no">${pad(s.n)} / ${TOTAL}</span>${k}<h3>${s.title}</h3></aside><div class="ct">${body}${say}</div></article>`;
 }
 
 function recipeCard(s, i) {
@@ -127,7 +131,7 @@ function recipeCard(s, i) {
     <div class="say"><button type="button">PARA SUSTENTAR <i>+</i></button><div class="txt">${s.notes}</div></div></article>`;
 }
 function renderRecipes() {
-  const list = [22, 23, 24, 25, 26, 27, 28].map(SL), g = list[0], rs = list.slice(1);
+  const list = [21, 22, 23, 24, 25, 26, 27].map(SL), g = list[0], rs = list.slice(1);
   const nav = rs.map((s, i) => `<button type="button" class="${i ? '' : 'on'}" data-i="${i}"><b>${i + 1}</b>${IM(s.img)}${s.name}</button>`).join('');
   return renderSlide(g) + `<div class="rec rv" id="rec"><div class="rlist">${nav}</div><div class="rdetail">${rs.map(recipeCard).join('')}</div></div>`;
 }
@@ -147,7 +151,7 @@ function build() {
       <div class="chband rv"><span class="gnum">${pad(i + 1)}</span><h2>${ch.name}</h2><p class="cs">${ch.sub}</p>
       <nav>${list.map(s => `<a href="#" data-go="${s.n}">${s.title}</a>`).join('')}</nav></div><div class="wrap">${body}</div></section>`;
   });
-  const g = SL(32);
+  const g = SL(31);
   html += `<section class="thanks" id="gracias" data-t="Gracias"><div class="mosr">${g.imgs.map(k => IM(k)).join('')}</div><h2>Gracias</h2><p class="q">${g.q}</p><p>${g.msg}</p><p><b>${g.authors.join(' · ')}</b></p><p>${g.uni}</p></section>`;
   $('#app').innerHTML = html;
   $$('.ct, .rdetail').forEach(ct => $$('[data-rv]', ct).forEach((el, i) => el.style.setProperty('--i', Math.min(i, 8))));
@@ -218,8 +222,8 @@ function selectRecipe(i) { const w = $('#rec'); $$('.rlist button', w).forEach((
 
 function jump(n) {
   let el;
-  if (n === 1) el = $('.cover'); else if (n === 32) el = $('#gracias');
-  else if (n >= 23 && n <= 28) { selectRecipe(n - 23); el = $('#rec'); }
+  if (n === 1) el = $('.cover'); else if (n === 31) el = $('#gracias');
+  else if (n >= 22 && n <= 27) { selectRecipe(n - 22); el = $('#rec'); }
   else el = $(`[data-n="${n}"]`).closest('.slide');
   el.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
@@ -228,7 +232,7 @@ const creditText = f => f.tipo === 'ia' ? `Imagen generada con IA${f.herramienta
   : f.tipo === 'propia' ? `Fotografía propia de los autores (${f.fecha}).` : `Fotografía: ${f.autor}, ${f.licencia}. Fuente: ${f.url}.`;
 function updateCredits() {
   const el = $('#credits'); if (!el) return;
-  el.innerHTML = '<h5>CRÉDITOS DE IMÁGENES</h5>' + [23, 24, 25, 26, 27, 28].map((n, i) => `<p><b>Receta ${i + 1} · ${SL(n).name}:</b> ${FOTOS[i].ok ? creditText(FOTOS[i]) : SL(n).credit}</p>`).join('') + `<p>Demás ilustraciones: ${CREDIT}</p>`;
+  el.innerHTML = '<h5>CRÉDITOS DE IMÁGENES</h5>' + [22, 23, 24, 25, 26, 27].map((n, i) => `<p><b>Receta ${i + 1} · ${SL(n).name}:</b> ${FOTOS[i].ok ? creditText(FOTOS[i]) : SL(n).credit}</p>`).join('') + `<p>Demás ilustraciones: ${CREDIT}</p>`;
 }
 function applyPhotos() {
   updateCredits();

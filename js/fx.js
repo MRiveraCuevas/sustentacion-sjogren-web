@@ -28,7 +28,7 @@
   });
   document.addEventListener('mouseout', e => { const s = e.target.closest && e.target.closest('.cd,.tilt,.rc'); if (s && !s.contains(e.relatedTarget)) { s.style.setProperty('--rx', '0deg'); s.style.setProperty('--ry', '0deg'); } });
 
-  // Glosario: definiciones tomadas de las diapositivas 12, 14 y 15
+  // Glosario: definiciones tomadas de las las diapositivas de introducción
   const GL = { 'xerostomía': 'Sensación de boca seca.', 'hiposalivación': 'Disminución medible del flujo salival.', 'disfagia': 'Dificultad para deglutir y transferir el bolo de la boca al estómago.',
     'bolo': 'Masa cohesiva y lubricada que la lengua empuja con facilidad.', 'IDDSI': 'Marco de 8 niveles continuos (0 a 7) para describir texturas de alimentos y bebidas.' };
   Object.entries(GL).forEach(([w, def]) => {
